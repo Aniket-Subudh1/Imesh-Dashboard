@@ -16,7 +16,7 @@ import {
   Minus
 } from 'lucide-react';
 import {
-  Line,
+  Line, 
   AreaChart,
   Area,
   BarChart,
@@ -46,6 +46,7 @@ const TrafficOverviewPage = () => {
     info: '#06b6d4'
   };
 
+  
   // Generate dynamic data based on time range
   const generateTrafficData = (range) => {
     const dataPoints = range === '1h' ? 12 : range === '6h' ? 24 : range === '24h' ? 48 : 96;

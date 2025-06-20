@@ -109,8 +109,9 @@ const Dashboard = () => {
     info: '#06b6d4',
     purple: '#8b5cf6',
     orange: '#f97316'
+    
   };
-
+   
   // Generate comprehensive dynamic data based on selections
   const generateDynamicData = useMemo(() => {
     const namespaceMultiplier = {
@@ -271,7 +272,7 @@ const Dashboard = () => {
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center justify-between w-full px-3 md:px-4 py-2 md:py-3 bg-white border border-gray-300 rounded-xl hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all shadow-sm"
         >
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex  items-center gap-2 min-w-0">
             {Icon && <Icon className="w-4 h-4 text-gray-500 flex-shrink-0" />}
             <span className="text-sm font-medium text-gray-900 truncate">{value}</span>
           </div>
@@ -281,7 +282,7 @@ const Dashboard = () => {
         {isOpen && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-            <div className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-xl z-20 max-h-60 overflow-y-auto">
+            <div className="absolute top-full left-0 mt-2 w-full text-black bg-white border border-gray-200 rounded-xl shadow-xl z-20 max-h-60 overflow-y-auto">
               {options.map((option) => (
                 <button
                   key={option}
@@ -1001,7 +1002,7 @@ const Dashboard = () => {
         </div>
 
         {/* Connection Metrics */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6">
+        <div className="bg-white rounded-2xl border  border-gray-200 p-4 md:p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Connections</h3>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">

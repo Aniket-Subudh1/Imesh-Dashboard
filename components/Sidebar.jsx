@@ -96,6 +96,7 @@ const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen })
              <Image 
                src="/imesh-logo.png"
                width={100}
+               alt='hi'
                height={100}
              />
              
