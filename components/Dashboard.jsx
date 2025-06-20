@@ -186,7 +186,7 @@ const Dashboard = () => {
 
   // Calculate current metrics with real-time updates
   const currentMetrics = useMemo(() => {
-    const recent = generateDynamicData.slice(-6); // Last 6 data points
+    const recent = generateDynamicData.slice(-6);
     const totalRequests = recent.reduce((sum, item) => sum + item.requests, 0);
     const totalErrors = recent.reduce((sum, item) => sum + item.errors, 0);
     const avgLatency = recent.reduce((sum, item) => sum + item.latency, 0) / recent.length;

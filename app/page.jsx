@@ -5,14 +5,6 @@ import Sidebar from '../components/Sidebar';
 import Dashboard from '../components/Dashboard';
 import TrafficOverview from '../components/TrafficOverview';
 
-// Import other components as needed
-// import ErrorAnalysis from '../components/ErrorAnalysis';
-// import MeshTopology from '../components/MeshTopology';
-// import ControlPlane from '../components/ControlPlane';
-// import Topology from '../components/Topology';
-// import Security from '../components/Security';
-// import Configuration from '../components/Configuration';
-
 const Page = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -23,27 +15,14 @@ const Page = () => {
         return <Dashboard />;
       case 'traffic-overview':
         return <TrafficOverview />;
-      // case 'errors':
-      //   return <ErrorAnalysis />;
-      // case 'mesh-topology':
-      //   return <MeshTopology />;
-      // case 'control-plane':
-      //   return <ControlPlane />;
-      // case 'topology':
-      //   return <Topology />;
-      // case 'security':
-      //   return <Security />;
-      // case 'config':
-      //   return <Configuration />;
       default:
         return <Dashboard />;
     }
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar - Fixed on desktop, overlay on mobile */}
-      <div className="hidden lg:block">
+    <div className="flex h-screen bg-gray-50 overflow-hidden w-full">
+      <div className="hidden lg:block flex-shrink-0">
         <Sidebar
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
@@ -52,7 +31,6 @@ const Page = () => {
         />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
       <div className="lg:hidden">
         <Sidebar
           currentPage={currentPage}
@@ -62,9 +40,7 @@ const Page = () => {
         />
       </div>
 
-      {/* Main Content Area - Full width on mobile, remaining space on desktop */}
-      <div className="flex-1 flex flex-col min-h-0 w-full lg:w-auto">
-        {/* Mobile menu button */}
+      <div className="flex-1 flex flex-col min-h-0 min-w-0 w-full lg:w-auto">
         <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex-shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -79,9 +55,10 @@ const Page = () => {
           </button>
         </div>
 
-        {/* Page Content - Scrollable */}
-        <main className="flex-1 overflow-auto w-full">
-          {renderContent()}
+        <main className="flex-1 overflow-auto w-full min-w-0">
+          <div className="w-full max-w-full">
+            {renderContent()}
+          </div>
         </main>
       </div>
     </div>

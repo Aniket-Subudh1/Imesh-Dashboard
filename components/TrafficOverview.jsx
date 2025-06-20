@@ -16,7 +16,6 @@ import {
   Minus
 } from 'lucide-react';
 import {
-  LineChart,
   Line,
   AreaChart,
   Area,
@@ -152,7 +151,7 @@ const TrafficOverviewPage = () => {
       <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6 hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
            onClick={() => setSelectedMetric(metric.id)}>
         <div className="flex items-center justify-between mb-3 md:mb-4">
-          <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${
+          <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br flex-shrink-0 ${
             metric.color === 'blue' ? 'from-blue-500/10 to-blue-600/20 text-blue-600' :
             metric.color === 'red' ? 'from-red-500/10 to-red-600/20 text-red-600' :
             metric.color === 'purple' ? 'from-purple-500/10 to-purple-600/20 text-purple-600' :
@@ -160,7 +159,7 @@ const TrafficOverviewPage = () => {
           }`}>
             <Icon className="w-5 h-5 md:w-6 md:h-6" />
           </div>
-          <div className={`flex items-center gap-1 text-xs md:text-sm font-medium ${
+          <div className={`flex items-center gap-1 text-xs md:text-sm font-medium flex-shrink-0 ${
             isPositive ? 'text-green-600' : isNegative ? 'text-red-600' : 'text-gray-500'
           }`}>
             {isPositive ? <ArrowUp className="w-3 h-3 md:w-4 md:h-4" /> : 
@@ -169,9 +168,9 @@ const TrafficOverviewPage = () => {
             <span>{Math.abs(metric.change)}%</span>
           </div>
         </div>
-        <div>
+        <div className="min-w-0">
           <h3 className="text-xs md:text-sm font-medium text-gray-600 mb-1">{metric.label}</h3>
-          <p className="text-xl md:text-2xl font-bold text-gray-900">{metric.value}</p>
+          <p className="text-xl md:text-2xl font-bold text-gray-900 truncate">{metric.value}</p>
         </div>
       </div>
     );
@@ -209,15 +208,15 @@ const TrafficOverviewPage = () => {
   };
 
   return (
-    <div className="p-3 md:p-6 space-y-4 md:space-y-6 bg-gray-50 min-h-screen w-full">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6 bg-gray-50 min-h-screen w-full max-w-full overflow-x-hidden">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Traffic Overview</h1>
           <p className="text-sm md:text-base text-gray-600 mt-1">Monitor real-time traffic patterns and performance metrics</p>
         </div>
         
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3 flex-shrink-0">
           <div className="flex items-center gap-1 bg-white rounded-lg border border-gray-200 p-1">
             {['1h', '6h', '24h', '7d'].map((range) => (
               <button
@@ -260,12 +259,12 @@ const TrafficOverviewPage = () => {
       </div>
 
       {/* Main Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6">
         {/* Primary Chart */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-4 md:p-6">
+        <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-200 p-4 md:p-6 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Request Metrics Over Time</h3>
-            <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-gray-900 min-w-0">Request Metrics Over Time</h3>
+            <div className="flex items-center gap-2 flex-shrink-0">
               <select 
                 className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700"
                 value={selectedMetric}
@@ -319,7 +318,7 @@ const TrafficOverviewPage = () => {
         </div>
 
         {/* Response Distribution */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6">
+        <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6 min-w-0">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Response Status</h3>
           <div className="h-48 md:h-64 w-full mb-4">
             <ResponsiveContainer width="100%" height="100%">
@@ -344,14 +343,14 @@ const TrafficOverviewPage = () => {
           <div className="space-y-2">
             {responseDistribution.map((item) => (
               <div key={item.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
                   <div 
                     className="w-3 h-3 rounded-full flex-shrink-0" 
                     style={{ backgroundColor: item.color }}
                   ></div>
                   <span className="text-sm text-gray-600 truncate">{item.name}</span>
                 </div>
-                <span className="text-sm font-medium text-gray-900">{item.value}%</span>
+                <span className="text-sm font-medium text-gray-900 flex-shrink-0">{item.value}%</span>
               </div>
             ))}
           </div>
@@ -398,7 +397,7 @@ const TrafficOverviewPage = () => {
                   className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm bg-white w-full sm:w-auto"
                 />
               </div>
-              <button className="p-2 text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg bg-white">
+              <button className="p-2 text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg bg-white flex-shrink-0">
                 <Filter className="w-4 h-4" />
               </button>
             </div>
