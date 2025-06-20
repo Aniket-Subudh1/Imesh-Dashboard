@@ -1,24 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Home, 
   Eye, 
-  Network, 
-  Shield, 
-  Settings,
   Database,
   Activity,
   X,
   ChevronRight,
   BarChart3,
-  AlertTriangle,
-  GitBranch,
-  Cpu
 } from 'lucide-react';
 
 const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen }) => {
   const [expandedItems, setExpandedItems] = useState(['visibility']);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [currentPage]);
 
   const menuItems = [
     { 
@@ -34,28 +32,7 @@ const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen })
       description: 'Traffic Analysis',
       submenu: [
         { id: 'traffic-overview', label: 'Traffic Overview', icon: BarChart3 },
-        { id: 'errors', label: 'Error Analysis', icon: AlertTriangle },
-        { id: 'mesh-topology', label: 'Mesh Topology', icon: GitBranch },
-        { id: 'control-plane', label: 'Control Plane', icon: Cpu }
       ]
-    },
-    { 
-      id: 'topology', 
-      label: 'Topology', 
-      icon: Network,
-      description: 'Service Map'
-    },
-    { 
-      id: 'security', 
-      label: 'Security', 
-      icon: Shield,
-      description: 'Policies & mTLS'
-    },
-    { 
-      id: 'config', 
-      label: 'Configuration', 
-      icon: Settings,
-      description: 'Istio Settings'
     },
   ];
 
@@ -75,7 +52,6 @@ const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen })
       }
     } else {
       setCurrentPage(item.id);
-      setSidebarOpen(false);
     }
   };
 
@@ -96,11 +72,10 @@ const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen })
         />
       )}
       
-      <div className={`fixed left-0 top-0 h-full w-72 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 z-50 transform transition-all duration-300 ease-in-out ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 lg:static lg:z-auto border-r border-slate-700/50`}>
+      <div className={`fixed left-0 top-0 h-screen w-72 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 z-50 transform transition-all duration-300 ease-in-out lg:relative lg:z-auto border-r border-slate-700/50 flex flex-col ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         
-        {/* Logo Section */}
         <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -124,7 +99,6 @@ const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen })
           </button>
         </div>
 
-        {/* Navigation */}
         <nav className="p-4 flex-1 overflow-y-auto">
           <div className="space-y-2">
             {menuItems.map((item) => {
@@ -160,7 +134,6 @@ const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen })
                     )}
                   </button>
 
-                  {/* Submenu */}
                   {item.submenu && isExpanded && (
                     <div className="ml-4 space-y-1 border-l border-slate-700/50 pl-4">
                       {item.submenu.map((subItem) => {
@@ -170,10 +143,7 @@ const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen })
                         return (
                           <button
                             key={subItem.id}
-                            onClick={() => {
-                              setCurrentPage(subItem.id);
-                              setSidebarOpen(false);
-                            }}
+                            onClick={() => setCurrentPage(subItem.id)}
                             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 text-sm ${
                               isSubActive
                                 ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
@@ -193,8 +163,7 @@ const Sidebar = ({ currentPage, setCurrentPage, isSidebarOpen, setSidebarOpen })
           </div>
         </nav>
 
-        {/* Cluster Status */}
-        <div className="p-4 border-t border-slate-700/50">
+        <div className="p-4 border-t border-slate-700/50 flex-shrink-0">
           <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-slate-600/50 rounded-xl p-4 backdrop-blur-sm">
             <div className="flex items-center gap-2 mb-3">
               <div className="flex items-center gap-2">

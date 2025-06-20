@@ -1,15 +1,11 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import dynamic from 'next/dynamic';
 import { 
   Activity, 
   AlertTriangle, 
   Clock, 
-  TrendingUp, 
-  Zap,
-  Server,
-  Users,
+  TrendingUp,
   Download,
   RefreshCw,
   Filter,
@@ -19,38 +15,37 @@ import {
   ArrowDown,
   Minus
 } from 'lucide-react';
-
-// Dynamically import Recharts components to avoid SSR issues
-const LineChart = dynamic(() => import('recharts').then((mod) => mod.LineChart), { ssr: false });
-const Line = dynamic(() => import('recharts').then((mod) => mod.Line), { ssr: false });
-const XAxis = dynamic(() => import('recharts').then((mod) => mod.XAxis), { ssr: false });
-const YAxis = dynamic(() => import('recharts').then((mod) => mod.YAxis), { ssr: false });
-const CartesianGrid = dynamic(() => import('recharts').then((mod) => mod.CartesianGrid), { ssr: false });
-const Tooltip = dynamic(() => import('recharts').then((mod) => mod.Tooltip), { ssr: false });
-const ResponsiveContainer = dynamic(() => import('recharts').then((mod) => mod.ResponsiveContainer), { ssr: false });
-const PieChart = dynamic(() => import('recharts').then((mod) => mod.PieChart), { ssr: false });
-const Pie = dynamic(() => import('recharts').then((mod) => mod.Pie), { ssr: false });
-const Cell = dynamic(() => import('recharts').then((mod) => mod.Cell), { ssr: false });
-const AreaChart = dynamic(() => import('recharts').then((mod) => mod.AreaChart), { ssr: false });
-const Area = dynamic(() => import('recharts').then((mod) => mod.Area), { ssr: false });
-const BarChart = dynamic(() => import('recharts').then((mod) => mod.BarChart), { ssr: false });
-const Bar = dynamic(() => import('recharts').then((mod) => mod.Bar), { ssr: false });
-
-const BRAND_COLORS = {
-  primary: '#1e3a8a',
-  secondary: '#e91e63', 
-  accent: '#06b6d4', 
-  success: '#10b981',
-  warning: '#f59e0b',
-  error: '#ef4444',
-  dark: '#1f2937',
-  light: '#f8fafc'
-};
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
+} from 'recharts';
 
 const TrafficOverviewPage = () => {
   const [timeRange, setTimeRange] = useState('1h');
   const [refreshing, setRefreshing] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState('requests');
+
+  const COLORS = {
+    primary: '#3b82f6',
+    secondary: '#e91e63',
+    success: '#10b981',
+    warning: '#f59e0b',
+    error: '#ef4444',
+    info: '#06b6d4'
+  };
 
   // Generate dynamic data based on time range
   const generateTrafficData = (range) => {
@@ -83,14 +78,14 @@ const TrafficOverviewPage = () => {
         errors,
         latency,
         throughput,
-        successRate: ((requests - errors) / requests * 100).toFixed(1)
+        successRate: parseFloat(((requests - errors) / requests * 100).toFixed(1))
       };
     });
   };
 
   const trafficData = useMemo(() => generateTrafficData(timeRange), [timeRange]);
 
-  const metrics = [
+  const metrics = useMemo(() => [
     {
       id: 'requests',
       label: 'Total Requests',
@@ -123,13 +118,13 @@ const TrafficOverviewPage = () => {
       icon: TrendingUp,
       color: 'green'
     }
-  ];
+  ], [trafficData]);
 
   const responseDistribution = [
-    { name: '200 OK', value: 89.5, color: BRAND_COLORS.success },
-    { name: '404 Not Found', value: 5.2, color: BRAND_COLORS.warning },
-    { name: '500 Error', value: 3.1, color: BRAND_COLORS.error },
-    { name: '403 Forbidden', value: 1.8, color: BRAND_COLORS.secondary },
+    { name: '200 OK', value: 89.5, color: COLORS.success },
+    { name: '404 Not Found', value: 5.2, color: COLORS.warning },
+    { name: '500 Error', value: 3.1, color: COLORS.error },
+    { name: '403 Forbidden', value: 1.8, color: COLORS.secondary },
     { name: 'Others', value: 0.4, color: '#6b7280' }
   ];
 
@@ -154,29 +149,29 @@ const TrafficOverviewPage = () => {
     const isNegative = metric.change < 0;
     
     return (
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+      <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6 hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
            onClick={() => setSelectedMetric(metric.id)}>
-        <div className="flex items-center justify-between mb-4">
-          <div className={`p-3 rounded-xl bg-gradient-to-br ${
+        <div className="flex items-center justify-between mb-3 md:mb-4">
+          <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${
             metric.color === 'blue' ? 'from-blue-500/10 to-blue-600/20 text-blue-600' :
             metric.color === 'red' ? 'from-red-500/10 to-red-600/20 text-red-600' :
             metric.color === 'purple' ? 'from-purple-500/10 to-purple-600/20 text-purple-600' :
             'from-green-500/10 to-green-600/20 text-green-600'
           }`}>
-            <Icon className="w-6 h-6" />
+            <Icon className="w-5 h-5 md:w-6 md:h-6" />
           </div>
-          <div className={`flex items-center gap-1 text-sm font-medium ${
+          <div className={`flex items-center gap-1 text-xs md:text-sm font-medium ${
             isPositive ? 'text-green-600' : isNegative ? 'text-red-600' : 'text-gray-500'
           }`}>
-            {isPositive ? <ArrowUp className="w-4 h-4" /> : 
-             isNegative ? <ArrowDown className="w-4 h-4" /> : 
-             <Minus className="w-4 h-4" />}
+            {isPositive ? <ArrowUp className="w-3 h-3 md:w-4 md:h-4" /> : 
+             isNegative ? <ArrowDown className="w-3 h-3 md:w-4 md:h-4" /> : 
+             <Minus className="w-3 h-3 md:w-4 md:h-4" />}
             <span>{Math.abs(metric.change)}%</span>
           </div>
         </div>
         <div>
-          <h3 className="text-sm font-medium text-gray-600 mb-1">{metric.label}</h3>
-          <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
+          <h3 className="text-xs md:text-sm font-medium text-gray-600 mb-1">{metric.label}</h3>
+          <p className="text-xl md:text-2xl font-bold text-gray-900">{metric.value}</p>
         </div>
       </div>
     );
@@ -185,7 +180,7 @@ const TrafficOverviewPage = () => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-4 border border-gray-200 rounded-xl shadow-xl">
+        <div className="bg-white p-3 md:p-4 border border-gray-200 rounded-xl shadow-xl z-50">
           <p className="text-sm font-medium text-gray-900 mb-2">{`Time: ${label}`}</p>
           {payload.map((entry, index) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
@@ -198,22 +193,37 @@ const TrafficOverviewPage = () => {
     return null;
   };
 
+  const getChartData = () => {
+    switch (selectedMetric) {
+      case 'requests':
+        return trafficData.map(item => ({ ...item, primaryValue: item.requests }));
+      case 'errors':
+        return trafficData.map(item => ({ ...item, primaryValue: item.errors }));
+      case 'latency':
+        return trafficData.map(item => ({ ...item, primaryValue: item.latency }));
+      case 'throughput':
+        return trafficData.map(item => ({ ...item, primaryValue: item.throughput }));
+      default:
+        return trafficData.map(item => ({ ...item, primaryValue: item.requests }));
+    }
+  };
+
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6 bg-gray-50 min-h-screen w-full">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Traffic Overview</h1>
-          <p className="text-gray-600 mt-1">Monitor real-time traffic patterns and performance metrics</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Traffic Overview</h1>
+          <p className="text-sm md:text-base text-gray-600 mt-1">Monitor real-time traffic patterns and performance metrics</p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-1 bg-white rounded-lg border border-gray-200 p-1">
             {['1h', '6h', '24h', '7d'].map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium rounded-md transition-all ${
                   timeRange === range
                     ? 'bg-blue-600 text-white shadow-sm'
                     : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
@@ -224,34 +234,36 @@ const TrafficOverviewPage = () => {
             ))}
           </div>
           
-          <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-          >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
-          </button>
-          
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-            <Download className="w-4 h-4" />
-            Export
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="flex items-center gap-2 px-3 md:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+            
+            <button className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm">
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Export</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         {metrics.map((metric) => (
           <MetricCard key={metric.id} metric={metric} />
         ))}
       </div>
 
       {/* Main Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Primary Chart */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <h3 className="text-lg font-semibold text-gray-900">Request Metrics Over Time</h3>
             <div className="flex items-center gap-2">
               <select 
@@ -266,36 +278,37 @@ const TrafficOverviewPage = () => {
               </select>
             </div>
           </div>
-          <div className="h-80">
+          <div className="h-64 md:h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={trafficData}>
+              <AreaChart data={getChartData()}>
                 <defs>
                   <linearGradient id="requestsGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={BRAND_COLORS.primary} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={BRAND_COLORS.primary} stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="errorsGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={BRAND_COLORS.error} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={BRAND_COLORS.error} stopOpacity={0}/>
+                    <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="time" stroke="#64748b" tick={{ fontSize: 12 }} />
+                <XAxis 
+                  dataKey="time" 
+                  stroke="#64748b" 
+                  tick={{ fontSize: 12 }}
+                  interval="preserveStartEnd"
+                />
                 <YAxis stroke="#64748b" tick={{ fontSize: 12 }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area 
                   type="monotone" 
-                  dataKey="requests" 
-                  stroke={BRAND_COLORS.primary}
+                  dataKey="primaryValue" 
+                  stroke={COLORS.primary}
                   fillOpacity={1}
                   fill="url(#requestsGradient)"
                   strokeWidth={3}
-                  name="Requests"
+                  name={selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="errors" 
-                  stroke={BRAND_COLORS.error}
+                  stroke={COLORS.error}
                   strokeWidth={2}
                   name="Errors"
                   dot={false}
@@ -306,17 +319,17 @@ const TrafficOverviewPage = () => {
         </div>
 
         {/* Response Distribution */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Response Status</h3>
-          <div className="h-64">
+          <div className="h-48 md:h-64 w-full mb-4">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={responseDistribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={50}
-                  outerRadius={90}
+                  innerRadius={30}
+                  outerRadius={80}
                   paddingAngle={5}
                   dataKey="value"
                 >
@@ -328,15 +341,15 @@ const TrafficOverviewPage = () => {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="space-y-2 mt-4">
+          <div className="space-y-2">
             {responseDistribution.map((item) => (
               <div key={item.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <div 
-                    className="w-3 h-3 rounded-full" 
+                    className="w-3 h-3 rounded-full flex-shrink-0" 
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-sm text-gray-600">{item.name}</span>
+                  <span className="text-sm text-gray-600 truncate">{item.name}</span>
                 </div>
                 <span className="text-sm font-medium text-gray-900">{item.value}%</span>
               </div>
@@ -346,18 +359,23 @@ const TrafficOverviewPage = () => {
       </div>
 
       {/* Latency Distribution */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Latency Distribution</h3>
-        <div className="h-64">
+        <div className="h-48 md:h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={trafficData.slice(-12)}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="time" stroke="#64748b" tick={{ fontSize: 12 }} />
+              <XAxis 
+                dataKey="time" 
+                stroke="#64748b" 
+                tick={{ fontSize: 12 }}
+                interval="preserveStartEnd"
+              />
               <YAxis stroke="#64748b" tick={{ fontSize: 12 }} />
               <Tooltip content={<CustomTooltip />} />
               <Bar 
                 dataKey="latency" 
-                fill={BRAND_COLORS.secondary}
+                fill={COLORS.secondary}
                 radius={[4, 4, 0, 0]}
                 name="Latency (ms)"
               />
@@ -368,16 +386,16 @@ const TrafficOverviewPage = () => {
 
       {/* Top Endpoints Table */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between">
+        <div className="px-4 md:px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <h3 className="text-lg font-semibold text-gray-900">Top Endpoints</h3>
             <div className="flex items-center gap-2">
-              <div className="relative">
+              <div className="relative flex-1 sm:flex-initial">
                 <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 <input 
                   type="text" 
                   placeholder="Search endpoints..."
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm bg-white w-full sm:w-auto"
                 />
               </div>
               <button className="p-2 text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg bg-white">
@@ -387,22 +405,22 @@ const TrafficOverviewPage = () => {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[600px]">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 md:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Endpoint
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 md:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Requests
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 md:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Errors
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 md:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Avg Latency
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 md:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Trend
                 </th>
               </tr>
@@ -410,17 +428,17 @@ const TrafficOverviewPage = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {topEndpoints.map((endpoint, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <Globe className="w-4 h-4 text-blue-500 mr-3" />
-                      <span className="text-sm font-medium text-gray-900 font-mono">{endpoint.endpoint}</span>
+                  <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center min-w-0">
+                      <Globe className="w-4 h-4 text-blue-500 mr-3 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-900 font-mono truncate">{endpoint.endpoint}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                  <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                     {endpoint.requests.toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
+                  <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       endpoint.errors === 0 ? 'bg-green-100 text-green-800' : 
                       endpoint.errors > 20 ? 'bg-red-100 text-red-800' : 
                       endpoint.errors > 10 ? 'bg-yellow-100 text-yellow-800' : 
@@ -429,10 +447,10 @@ const TrafficOverviewPage = () => {
                       {endpoint.errors}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                  <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                     {endpoint.latency}ms
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                     <div className={`flex items-center gap-1 text-sm ${
                       endpoint.trend === 'up' ? 'text-green-600' : 
                       endpoint.trend === 'down' ? 'text-red-600' : 
